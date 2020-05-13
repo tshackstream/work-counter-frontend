@@ -1,0 +1,39 @@
+version: 2.1
+orbs:
+  aws-ecr: circleci/aws-ecr@0.0.2
+jobs:
+  build-and-push:
+    parameters:
+      tag:
+        type: string
+    steps:
+      - aws-ecr/build-and-push-image:
+          account-url: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+          repo: "${AWS_RESOURCE_NAME_PREFIX}"
+          region: ${AWS_DEFAULT_REGION}
+          tag: "<< parameters.tag >>"
+workflows:
+  build-and-push-dev:
+    jobs:
+      - build-and-push:
+          tag: develop
+          filters:
+            branches:
+              only:
+                - develop
+  build-and-push-prod:
+    jobs:
+      - build-and-push:
+          tag: latest
+          filters:
+            branches:
+              only:
+                - master
+  build-and-push-tag:
+    jobs:
+      - build-and-push:
+          tag: ${CIRCLE_TAG}
+          filters:
+            tags:
+              only:
+                - /^update-*/
