@@ -1,14 +1,12 @@
 version: 2.1
 orbs:
-  aws-ecr: circleci/aws-ecr@3.1.0
+  aws-ecr: circleci/aws-ecr@6.8.2
 workflows:
   build-and-push-dev:
     jobs:
-      - aws-ecr/build_and_push_image:
+      - aws-ecr/build-and-push-image:
           context: work-counter-aws
-          account-url: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
           repo: "${APP_PREFIX}-front"
-          region: ${AWS_DEFAULT_REGION}
           tag: "develop"
           filters:
             branches:
@@ -16,7 +14,7 @@ workflows:
                 - develop
   build-and-push-prod:
     jobs:
-      - aws-ecr/build_and_push_image:
+      - aws-ecr/build-and-push-image:
           context: work-counter-aws
           account-url: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
           repo: "${APP_PREFIX}-front"
@@ -28,7 +26,7 @@ workflows:
                 - master
   build-and-push-tag:
     jobs:
-      - aws-ecr/build_and_push_image:
+      - aws-ecr/build-and-push-image:
           context: work-counter-aws
           account-url: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
           repo: "${APP_PREFIX}-front"
