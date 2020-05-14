@@ -27,5 +27,7 @@ workflows:
           repo: "${APP_PREFIX}-front"
           tag: "${CIRCLE_TAG}"
           filters:
+            branches:
+              ignore: /.*/
             tags:
               only: /^update-*/
