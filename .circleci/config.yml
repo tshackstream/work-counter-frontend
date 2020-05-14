@@ -2,7 +2,7 @@ version: 2.1
 orbs:
   aws-ecr: circleci/aws-ecr@0.0.2
 jobs:
-  build-and-push:
+  build:
     executor: docker
     parameters:
       tag:
