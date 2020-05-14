@@ -6,7 +6,7 @@ workflows:
     jobs:
       - aws-ecr/build-and-push-image:
           context: work-counter-aws
-          repo: "${APP_PREFIX}-front"
+          repo: "${APP_PREFIX}-${APP_TYPE}"
           tag: "develop"
           filters:
             branches:
@@ -15,7 +15,7 @@ workflows:
     jobs:
       - aws-ecr/build-and-push-image:
           context: work-counter-aws
-          repo: "${APP_PREFIX}-front"
+          repo: "${APP_PREFIX}-${APP_TYPE}"
           tag: "latest"
           filters:
             branches:
@@ -24,7 +24,7 @@ workflows:
     jobs:
       - aws-ecr/build-and-push-image:
           context: work-counter-aws
-          repo: "${APP_PREFIX}-front"
+          repo: "${APP_PREFIX}-${APP_TYPE}"
           tag: "${CIRCLE_TAG}"
           filters:
             branches:
