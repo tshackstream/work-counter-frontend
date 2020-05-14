@@ -4,7 +4,7 @@ orbs:
 workflows:
   build-and-push-dev:
     jobs:
-      - aws-ecr/build-and-push-image:
+      - aws-ecr/build_and_push_image:
           context: work-counter-aws
           account-url: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
           repo: "${APP_PREFIX}-front"
@@ -16,7 +16,7 @@ workflows:
                 - develop
   build-and-push-prod:
     jobs:
-      - aws-ecr/build-and-push-image:
+      - aws-ecr/build_and_push_image:
           context: work-counter-aws
           account-url: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
           repo: "${APP_PREFIX}-front"
@@ -28,7 +28,7 @@ workflows:
                 - master
   build-and-push-tag:
     jobs:
-      - aws-ecr/build-and-push-image:
+      - aws-ecr/build_and_push_image:
           context: work-counter-aws
           account-url: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
           repo: "${APP_PREFIX}-front"
