@@ -16,7 +16,7 @@ jobs:
 workflows:
   build-and-push-dev:
     jobs:
-      - build-and-push:
+      - build:
           tag: develop
           filters:
             branches:
@@ -24,7 +24,7 @@ workflows:
                 - develop
   build-and-push-prod:
     jobs:
-      - build-and-push:
+      - build:
           tag: latest
           filters:
             branches:
@@ -32,12 +32,9 @@ workflows:
                 - master
   build-and-push-tag:
     jobs:
-      - build-and-push:
+      - build:
           tag: ${CIRCLE_TAG}
           filters:
-            branches:
-              ignore:
-                - /*/
             tags:
               only:
                 - /^update-*/
