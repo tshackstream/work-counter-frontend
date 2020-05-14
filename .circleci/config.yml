@@ -10,29 +10,22 @@ workflows:
           tag: "develop"
           filters:
             branches:
-              only:
-                - develop
+              only: develop
   build-and-push-prod:
     jobs:
       - aws-ecr/build-and-push-image:
           context: work-counter-aws
-          account-url: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
           repo: "${APP_PREFIX}-front"
-          region: ${AWS_DEFAULT_REGION}
           tag: "latest"
           filters:
             branches:
-              only:
-                - master
+              only: master
   build-and-push-tag:
     jobs:
       - aws-ecr/build-and-push-image:
           context: work-counter-aws
-          account-url: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
           repo: "${APP_PREFIX}-front"
-          region: ${AWS_DEFAULT_REGION}
           tag: "${CIRCLE_TAG}"
           filters:
             tags:
-              only:
-                - /^update-*/
+              only: /^update-*/
