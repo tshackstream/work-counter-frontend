@@ -35,6 +35,7 @@
   import ProjectSettingForm from "~/components/molecules/ProjectSettingForm.vue";
   import { saveAs } from 'file-saver';
   import { monthStore, appStatusStore } from "~/store";
+  import Backend from "~/libs/backend";
 
   @Component({
     components: {
@@ -62,34 +63,22 @@
 
     // cf https://qiita.com/koushisa/items/ac908d81361534264d35
     async downloadWorkSheet() {
-      const projectId = appStatusStore.currentProjectId;
-      const year = monthStore.year;
-      const month = monthStore.month;
       this.workSheetProcessing = true;
-      await this.$axios.get(
-        '/api/v1/download/work_sheet/' + projectId + '/' + year + '/' + month, {
-          responseType: 'blob'
-        }
-      )
-        .then(res => {
-          saveAs(res.data, year.toString() + month.toString() + "勤務表.xlsx");
-        });
+      await Backend.downloadWorkSheet(
+        appStatusStore.currentProjectId,
+        monthStore.year,
+        monthStore.month
+      );
       this.workSheetProcessing = false;
     }
 
     async downloadInvoice() {
-      const projectId = appStatusStore.currentProjectId;
-      const year = monthStore.year;
-      const month = monthStore.month;
       this.invoiceProcessing = true;
-      await this.$axios.get(
-        '/api/v1/download/invoice/' + projectId + '/' + year + '/' + month, {
-          responseType: 'blob'
-        }
-      )
-        .then(res => {
-          saveAs(res.data, year.toString() + month.toString() + "請求書.xlsx");
-        });
+      await Backend.downloadInvoice(
+        appStatusStore.currentProjectId,
+        monthStore.year,
+        monthStore.month
+      );
       this.invoiceProcessing = false;
     }
   }

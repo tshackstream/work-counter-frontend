@@ -1,6 +1,6 @@
 type Status = {
-  id: number,
-  status_name: string
+  label: string,
+  value: number
 };
 
 export default Status;
