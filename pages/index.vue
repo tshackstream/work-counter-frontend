@@ -8,7 +8,7 @@
         sm8
         md6
     >
-      <MonthlyInput @saveToDb="save" :date-info="monthInfo" :is-sp="isSp" />
+      <MonthlyInput :is-sp="isSp" />
     </v-flex>
   </v-layout>
 </template>
@@ -21,6 +21,7 @@
   import {calcMonthlyInfo} from "~/libs/work";
   import { Context } from '@nuxt/types';
   import {appStatusStore, dateInfoStore, monthStore, projectStore, statusStore, workTimeStore} from "~/store";
+  import Backend from "~/libs/backend";
 
   @Component({
     components: {
@@ -29,24 +30,6 @@
   })
   export default class PageIndex extends Vue {
     isSp = this.$vuetify.breakpoint.mdAndDown;
-
-    get monthInfo() {
-      return dateInfoStore.monthInfo;
-    }
-
-    async save() {
-      appStatusStore.setUpdateTime();
-      await sleep(autoSaveWaitMilliSeconds);
-      const currentDate = new Date();
-      // 最終入力日時より現在日時の方が後だったら処理実行
-      // 例えば入力後設定秒数以内に別の入力があった場合は処理しない
-      if (currentDate.getTime() > appStatusStore.updateTime) {
-        appStatusStore.setUnderSaving();
-        const data = JSON.stringify(dateInfoStore.monthInfo);
-        await this.$axios.$put('/api/v1/work_info', data, {headers: {"Content-Type": "application/json"}});
-        appStatusStore.setFinishSaving();
-      }
-    }
 
     async fetch(context: Context): Promise<void> {
       const {app, store}  = context;
@@ -63,8 +46,10 @@
       await statusStore.getStatus();
       await projectStore.getProjectInfo(appStatusStore.currentProjectId);
 
-      let workRes = await (app.$axios as any).get(
-        '/api/v1/monthly_work_result/' +  appStatusStore.currentProjectId + '/' + monthStore.year + '/' + monthStore.month
+      let workRes = await Backend.getMonthlyWorkResult(
+        appStatusStore.currentProjectId,
+        monthStore.year,
+        monthStore.month
       );
 
       if (typeof workRes.data === 'undefined' || workRes.data === null) {
@@ -89,16 +74,18 @@
         switch (mutation.type) {
           case 'month/changeMonth':
             appStatusStore.setLoading();
-            const data = JSON.stringify(dateInfoStore.monthInfo);
-            this.$axios.$put('/api/v1/work_info', data, {headers: {"Content-Type": "application/json"}});
+            await Backend.saveWorkInfo(dateInfoStore.monthInfo);
             await dateInfoStore.getMonthInfo(
               {
                 projectId: appStatusStore.currentProjectId,
                 year: monthStore.year,
                 month: monthStore.month
             });
-            let workRes = await (this as any).$axios.$get(
-              '/api/v1/monthly_work_result/' +  appStatusStore.currentProjectId + '/' + monthStore.year + '/' + monthStore.month
+
+            let workRes = await Backend.getMonthlyWorkResult(
+              appStatusStore.currentProjectId,
+              monthStore.year,
+              monthStore.month
             );
 
             if (typeof workRes === 'undefined' || workRes === null) {
@@ -114,7 +101,7 @@
                 await workTimeStore.saveWorkTimeInfo(monthlyInfo);
               }
             } else {
-              await workTimeStore.saveWorkTimeInfo(workRes);
+              await workTimeStore.saveWorkTimeInfo(workRes.data);
             }
             appStatusStore.setFinishLoading();
             break;

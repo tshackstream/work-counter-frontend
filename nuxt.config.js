@@ -87,6 +87,9 @@ module.exports = {
       "vee-validate/dist/rules"
     ],
     extend (config, ctx) {
+      if (ctx.isDev && ctx.isClient) {
+        config.devtool = 'eval-source-map'
+      }
     }
   }
 }

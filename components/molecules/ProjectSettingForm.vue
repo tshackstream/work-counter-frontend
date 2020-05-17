@@ -63,6 +63,7 @@
 <script lang="ts">
   import {Component, Vue} from 'nuxt-property-decorator';
   import {appStatusStore, projectStore} from "~/store";
+  import Backend from "~/libs/backend";
 
   @Component
   export default class ProjectSettingForm extends Vue {
@@ -73,8 +74,7 @@
     async saveToStore(key: string, value: any) {
       appStatusStore.setUnderSaving();
       await projectStore.updateProjectInfo({key: key, value: value});
-      const data = JSON.stringify(this.project);
-      await this.$axios.$put('/api/v1/projects', data, {headers: {"Content-Type": "application/json"}});
+      await Backend.saveProject(this.project)
       appStatusStore.setFinishSaving();
     }
   }

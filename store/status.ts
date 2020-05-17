@@ -1,7 +1,7 @@
 import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators'
-import {$axios} from "~/libs/api";
+import Backend from "~/libs/backend";
 
-interface IStatusStore {
+export interface IStatusStore {
   status: {'label': string, 'value': number}[] | null
 }
 
@@ -16,9 +16,9 @@ export default class StatusStore extends VuexModule implements IStatusStore {
 
   @Action
   async getStatus() {
-    const res = await $axios.$get('/api/v1/status/list');
+    const res = await Backend.getStatusList();
     let list = [{'label': "", 'value': 0}];
-    list = list.concat(res);
+    list = list.concat(res.data);
     this.setStatus(list);
   }
 };

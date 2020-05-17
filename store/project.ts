@@ -1,7 +1,7 @@
 import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators'
 import Project from "~/types/Project";
 import {calcDeduction} from "~/libs/work";
-import {$axios} from "~/libs/api";
+import Backend from "~/libs/backend";
 
 interface IProjectStore {
   data: Project | null
@@ -38,8 +38,8 @@ export default class ProjectStore extends VuexModule implements IProjectStore {
 
   @Action
   async getProjectInfo(projectId: number) {
-    const res = await $axios.$get('/api/v1/projects/' + projectId);
-    this.setProjectInfo(res);
+    const res = await Backend.getProject(projectId);
+    this.setProjectInfo(res.data);
   }
 
   @Action

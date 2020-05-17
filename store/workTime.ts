@@ -1,5 +1,5 @@
 import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators'
-import {$axios} from "~/libs/api";
+import Backend from "~/libs/backend";
 
 export interface IWorkTimeStore {
   id: number,
@@ -45,8 +45,7 @@ export default class WorkTimeStore extends VuexModule implements IWorkTimeStore 
 
   @Action
   async saveWorkTimeInfo(param: IWorkTimeStore) {
-    const data = JSON.stringify(param);
-    const res = await $axios.$post('/api/v1/monthly_work_result', data, {headers: {"Content-Type": "application/json"}});
+    const res = await Backend.saveMonthlyWorkResult(param);
     this.setWorkTimeInfoMutation(res);
   }
 };
