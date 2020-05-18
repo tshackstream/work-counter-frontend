@@ -20,19 +20,25 @@
             :value="info.status"
         />
       </v-col>
-      <v-col lg="1">
-        <v-text-field v-on:change="save(info.id, 'start', $event)" label="出勤時間" :value="info.start" />
+      <v-col class="time-input">
+        <text-field-with-validation item-name="出勤" additionalClass="input-text-center" validation-rules="max:2" @change="save(info.id, 'start_hour', $event)" label="出勤" :value="startHour" />
+        <span>:</span>
+        <text-field-with-validation item-name="start_minute" validation-rules="max:2" @change="save(info.id, 'start_minute', $event)" :value="startMinute" />
       </v-col>
-      <v-col lg="1">
-        <v-text-field v-on:change="save(info.id, 'end', $event)" label="退勤時間" :value="info.end" />
+      <v-col class="time-input">
+        <text-field-with-validation item-name="end_hour" validation-rules="max:2" @change="save(info.id, 'end_hour', $event)" label="退勤" :value="endHour" />
+        <span>:</span>
+        <text-field-with-validation item-name="end_minute" validation-rules="max:2" @change="save(info.id, 'end_minute', $event)" :value="endMinute" />
       </v-col>
-      <v-col lg="1">
-        <v-text-field v-on:change="save(info.id, 'rest', $event)" label="休憩時間" :value="info.rest" />
+      <v-col class="time-input">
+        <text-field-with-validation item-name="rest_hour" validation-rules="max:2" @change="save(info.id, 'rest_hour', $event)" label="休憩" :value="restHour" />
+        <span>:</span>
+        <text-field-with-validation item-name="rest_minute" validation-rules="max:2" @change="save(info.id, 'rest_minute', $event)" :value="restMinute" />
       </v-col>
       <v-col lg="1">
         <v-text-field
             v-on:change="save(info.id, 'total', $event)"
-            label="実働時間"
+            label="実働"
             :value="(info.start === null || info.start === '')
               && (info.end === null || info.end === '')
               && (info.rest === null || info.rest === '')
@@ -40,7 +46,7 @@
             readonly>
         </v-text-field>
       </v-col>
-      <v-col v-if="!isSp">
+      <v-col lg="6" v-if="!isSp">
         <v-text-field v-on:change="save(info.id, 'note', $event)" label="備考" :value="info.note" />
       </v-col>
     </v-row>
@@ -68,6 +74,36 @@
   export default class AttendanceInput extends Vue {
     @Prop({type: Object} as PropOptions<DateInfo>) info?: Object;
     @Prop({type: Boolean, required: true}) isSp!: boolean;
+
+    get startHour() {
+      if (this.$props.info.start === null || this.$props.info.start.length === 0) return this.$props.info.start;
+      return this.$props.info.start.split(':')[0];
+    }
+
+    get startMinute() {
+      if (this.$props.info.start === null || this.$props.info.start.length === 0) return this.$props.info.start;
+      return this.$props.info.start.split(':')[1];
+    }
+
+    get endHour() {
+      if (this.$props.info.end === null || this.$props.info.end.length === 0) return this.$props.info.end;
+      return this.$props.info.end.split(':')[0];
+    }
+
+    get endMinute() {
+      if (this.$props.info.end === null || this.$props.info.end.length === 0) return this.$props.info.end;
+      return this.$props.info.end.split(':')[1];
+    }
+
+    get restHour() {
+      if (this.$props.info.rest === null || this.$props.info.rest.length === 0) return this.$props.info.rest;
+      return this.$props.info.rest.split(':')[0];
+    }
+
+    get restMinute() {
+      if (this.$props.info.rest === null || this.$props.info.rest.length === 0) return this.$props.info.rest;
+      return this.$props.info.rest.split(':')[1];
+    }
 
     get status() {
       return statusStore.status;
@@ -104,5 +140,10 @@
   }
   .saturday {
     color: #4c53ff;
+  }
+
+  .time-input {
+    display: flex;
+    align-items: baseline;
   }
 </style>

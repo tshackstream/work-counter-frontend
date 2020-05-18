@@ -1,6 +1,8 @@
 <template>
   <div>
-    <AttendanceInput @saveInput="save" v-for="(info, idx) in monthInfo" :key="idx" :info="info" :is-sp="isSp"/>
+    <validation-observer v-slot="{ validate }">
+      <AttendanceInput @saveInput="save" v-for="(info, idx) in monthInfo" :key="idx" :info="info" :is-sp="isSp"/>
+    </validation-observer>
   </div>
 </template>
 
@@ -11,9 +13,11 @@
   import {sleep} from "~/libs/time";
   import {autoSaveWaitMilliSeconds} from "~/config/app";
   import Backend from "~/libs/backend";
+  import TextFieldWithValidation from "~/components/atoms/TextFieldWithValidation.vue";
 
   @Component({
     components: {
+      TextFieldWithValidation,
       AttendanceInput
     }
   })
