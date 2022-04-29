@@ -36,28 +36,11 @@ export function formatDecimalTime(seconds: number, floorNum: number):number {
 }
 
 export function calcDailyTotal(key: string, monthInfo: DateInfo, value: string):string|undefined {
-  let start: Date|null;
-  let end: Date|null;
-  let rest: string|undefined;
-  switch (key) {
-    case 'start':
-      start = getDate(value);
-      end = getDate(monthInfo.end);
-      rest = monthInfo.rest;
-      break;
-    case 'end':
-      start = getDate(monthInfo.start);
-      end = getDate(value);
-      rest = monthInfo.rest;
-      break;
-    case 'rest':
-      start = getDate(monthInfo.start);
-      end = getDate(monthInfo.end);
-      rest = value;
-      break;
-    default:
-      return monthInfo.total;
-  }
+  const values = getValues(key, monthInfo, value);
+  if (values === null) return monthInfo.total;
+  let start = values.start;
+  let end = values.end;
+  let rest = values.rest;
 
   if (start === null || end === null || rest === null || typeof rest === 'undefined') return monthInfo.total;
 
@@ -97,4 +80,48 @@ export function getDate(value: string|undefined):Date|null {
   }
 
   return new Date(date + value);
+}
+
+function getValues(key: string, monthInfo: DateInfo, value: string):({start: Date|null, end: Date|null, rest: string|undefined}|null) {
+  let start: Date|null;
+  let end: Date|null;
+  let rest: string|undefined;
+  switch (key) {
+    case 'start_hour':
+      start = getDate(value + ':' + monthInfo.start_minute);
+      end = getDate(monthInfo.end_hour + ':' + monthInfo.end_minute);
+      rest = monthInfo.rest_hour + ':' + monthInfo.rest_minute;
+      break;
+    case 'start_minute':
+      start = getDate(monthInfo.start_hour + ':' + value);
+      end = getDate(monthInfo.end_hour + ':' + monthInfo.end_minute);
+      rest = monthInfo.rest_hour + ':' + monthInfo.rest_minute;
+      break;
+    case 'end_hour':
+      start = getDate(monthInfo.start_hour + ':' + monthInfo.start_minute);
+      end = getDate(value + ':' + monthInfo.end_minute);
+      rest = monthInfo.rest_hour + ':' + monthInfo.rest_minute;
+      break;
+    case 'end_minute':
+      start = getDate(monthInfo.start_hour + ':' + monthInfo.start_minute);
+      end = getDate(monthInfo.end_hour + ':' + value);
+      rest = monthInfo.rest_hour + ':' + monthInfo.rest_minute;
+      break;
+    case 'rest_hour':
+      if (value === '0' || value.length === 0) value = '00';
+      start = getDate(monthInfo.start_hour + ':' + monthInfo.start_minute);
+      end = getDate(monthInfo.end_hour + ':' + monthInfo.end_minute);
+      rest = value + ':' + monthInfo.rest_minute;
+      break;
+    case 'rest_minute':
+      if (value === '0' || value.length === 0) value = '00';
+      start = getDate(monthInfo.start_hour + ':' + monthInfo.start_minute);
+      end = getDate(monthInfo.end_hour + ':' + monthInfo.end_minute);
+      rest = monthInfo.rest_hour + ':' + value;
+      break;
+    default:
+      return null;
+  }
+
+  return {start: start, end: end, rest: rest}
 }

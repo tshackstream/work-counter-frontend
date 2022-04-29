@@ -8,7 +8,7 @@
         sm8
         md6
     >
-      <MonthlyInput :is-sp="isSp" />
+      <TestMonthlyInput :is-sp="isSp" />
     </v-flex>
   </v-layout>
 </template>
@@ -16,8 +16,7 @@
 <script lang="ts">
   import {Component, Vue, Watch} from 'nuxt-property-decorator';
   import MonthlyInput from "~/components/organisms/MonthlyInput.vue";
-  import { sleep } from '~/libs/time';
-  import {autoSaveWaitMilliSeconds} from "~/config/app";
+  import TestMonthlyInput from "~/components/organisms/TestMonthlyInput.vue";
   import {calcMonthlyInfo} from "~/libs/work";
   import { Context } from '@nuxt/types';
   import {appStatusStore, dateInfoStore, monthStore, projectStore, statusStore, workTimeStore} from "~/store";
@@ -25,7 +24,8 @@
 
   @Component({
     components: {
-      MonthlyInput
+      MonthlyInput,
+      TestMonthlyInput
     }
   })
   export default class PageIndex extends Vue {

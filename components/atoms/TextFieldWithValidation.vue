@@ -1,7 +1,13 @@
 <template>
-  <validation-provider v-slot="{ errors }" :rules="validationRules" :name="itemName">
-    <v-text-field class="input-text-center" v-model="innerValue" :label="label" :name="fieldName" :placeholder="placeholder" />
-    <p v-show="errors.length" class="error--text">
+  <validation-provider v-slot="{ errors }" :rules="validationRules" :name="validationItemName" :vid="vid">
+    <v-text-field
+      :class="additionalClass"
+      v-model="innerValue"
+      :label="label"
+      :name="fieldName"
+      :placeholder="placeholder"
+    />
+    <p v-show="dispError && errors.length" class="error--text">
       {{ errors[0] }}
     </p>
   </validation-provider>
@@ -12,23 +18,23 @@
 
   @Component
   export default class TextFieldWithValidation extends Vue {
-    @Prop({type: String, required: true}) itemName!: string;
+    @Prop({type: String, required: true}) validationItemName!: string;
     @Prop({type: String}) label?: string;
     @Prop({type: String, required: true}) validationRules!: string;
     @Prop({type: String}) fieldName?: string;
     @Prop({type: String}) placeholder?: string;
     @Prop({type: String}) value?: string;
     @Prop({type: String}) additionalClass?: string;
+    @Prop({type: Boolean, default: true}) dispError!: boolean;
+    @Prop({type: String}) vid?: string;
 
-    innerValue = ''
 
-    mounted() {
-      this.innerValue = this.$props.value;
+    get innerValue() {
+      return this.$props.value;
     }
 
-    @Watch('innervalue')
-    onChange(val: string) {
-      this.$emit('input', val)
+    set innerValue(val) {
+      this.$emit('input', val);
     }
   }
 </script>

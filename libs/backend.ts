@@ -11,11 +11,11 @@ import {saveAs} from "file-saver";
 
 export default class Backend {
   static getStatusList(): Promise<AxiosResponse<Status[]>> {
-    return $axios.get(API_ENDPOINTS.getStatusList);
+    return $axios.get(API_ENDPOINTS.getStatusList, {timeout: 5000});
   }
 
   static getProject(projectId: number): Promise<AxiosResponse<Project>> {
-    return $axios.get(sprintf(API_ENDPOINTS.getProject, {projectId: projectId}));
+    return $axios.get(sprintf(API_ENDPOINTS.getProject, {projectId: projectId}), {timeout: 5000});
   }
 
   static saveProject(project: Project | null): void {
@@ -25,7 +25,7 @@ export default class Backend {
     $axios.$put(
       API_ENDPOINTS.saveProject,
       param,
-      {headers: {"Content-Type": "application/json"}}
+      {headers: {"Content-Type": "application/json"}, timeout: 5000}
     );
   }
 
@@ -34,7 +34,7 @@ export default class Backend {
     return $axios.$post(
       API_ENDPOINTS.saveMonthlyWorkResult,
       param,
-      {headers: {"Content-Type": "application/json"}}
+      {headers: {"Content-Type": "application/json"}, timeout: 5000}
     );
   }
 
@@ -43,7 +43,8 @@ export default class Backend {
       sprintf(
         API_ENDPOINTS.getMonthlyWorkResult,
         {projectId: projectId, year: year, month: month}
-      )
+      ),
+      {timeout: 5000}
     );
   }
 
@@ -52,18 +53,19 @@ export default class Backend {
       sprintf(
         API_ENDPOINTS.getWorkInfoList,
         {projectId: projectId, year: year, month: month}
-      )
+      ),
+      {timeout: 5000}
     );
   }
 
   static saveWorkInfo(monthInfo: MonthInfo | null): void {
-    if (monthInfo === null) return ;
+    if (monthInfo === null) return;
 
     const param = JSON.stringify(monthInfo);
     $axios.$put(
       API_ENDPOINTS.saveWorkInfo,
       param,
-      {headers: {"Content-Type": "application/json"}}
+      {headers: {"Content-Type": "application/json"}, timeout: 5000}
     );
   }
 
@@ -73,7 +75,7 @@ export default class Backend {
         API_ENDPOINTS.downloadWorkSheet,
         {projectId: projectId, year: year, month: month}
       ),
-    {responseType: 'blob'}
+    {responseType: 'blob', timeout: 5000}
     )
       .then(res => {
         saveAs(res.data, year.toString() + month.toString() + "勤務表.xlsx");
@@ -86,7 +88,7 @@ export default class Backend {
         API_ENDPOINTS.downloadInvoice,
         {projectId: projectId, year: year, month: month}
       ),
-      {responseType: 'blob'}
+      {responseType: 'blob', timeout: 5000}
     )
       .then(res => {
         saveAs(res.data, year.toString() + month.toString() + "請求書.xlsx");

@@ -19,6 +19,8 @@ interface updateParam {
 export default class DateInfoStore extends VuexModule implements IDateInfoStore {
   monthInfo: MonthInfo | null = null;
 
+  private timeKeys = ['start_hour', 'start_minute', 'end_hour', 'end_minute', 'rest_hour', 'rest_minute'];
+
   @Mutation
   setMonthInfo (value: DateInfo[]): void {
     this.monthInfo = value;
@@ -27,7 +29,7 @@ export default class DateInfoStore extends VuexModule implements IDateInfoStore 
   @Mutation
   updateMonthInfoMutation(param: updateParam) {
     if (this.monthInfo === null || typeof this.monthInfo === "undefined") return;
-    if ((param.key === 'start' || param.key === 'end' || param.key === 'rest') && typeof param.value === 'string') {
+    if (this.timeKeys.includes(param.key) && typeof param.value === 'string') {
       this.monthInfo[param.id].total = calcDailyTotal(param.key, this.monthInfo[param.id], param.value)
     }
     this.monthInfo[param.id][param.key] = param.value;

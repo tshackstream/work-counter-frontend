@@ -53,7 +53,8 @@
   import Month from "~/components/molecules/Month.vue";
   import Sidebar from "~/components/organisms/Sidebar.vue";
   import Loading from "~/components/molecules/Loading.vue";
-  import {appStatusStore, errorStatusStore} from "~/store";
+  import {appStatusStore, errorStatusStore, projectStore} from "~/store";
+  import {Context} from "@nuxt/types";
 
   @Component({
     components: {
