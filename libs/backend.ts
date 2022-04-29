@@ -89,7 +89,7 @@ export default class Backend {
       {responseType: 'blob'}
     )
       .then(res => {
-        saveAs(res.data, year.toString() + month.toString() + "請求書.xlsx");
+        saveAs(res.data, year.toString() + month.toString() + "請求書.pdf");
       });
   }
 }
